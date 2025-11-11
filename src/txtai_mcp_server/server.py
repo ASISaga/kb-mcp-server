@@ -17,6 +17,7 @@ from txtai_mcp_server.tools.causal_config import CausalBoostConfig, DEFAULT_CAUS
 from txtai_mcp_server.tools.search import register_search_tools
 from txtai_mcp_server.tools.qa import register_qa_tools
 from txtai_mcp_server.tools.retrieve import register_retrieve_tools
+from txtai_mcp_server.tools.summarize import register_summarize_tools
 
 
 # Configure logging
@@ -127,6 +128,7 @@ def create_server(
     register_search_tools(server)
     register_qa_tools(server)
     register_retrieve_tools(server)
+    register_summarize_tools(server)
     logger.info("Created and configured Knowledgebase instance")
     
     return server

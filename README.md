@@ -2,7 +2,7 @@
 
 # Embedding MCP Server
 
-A Model Context Protocol (MCP) server implementation powered by txtai, providing semantic search, knowledge graph capabilities, and AI-driven text processing through a standardized interface.
+A Model Context Protocol (MCP) server implementation powered by txtai, providing semantic search, knowledge graph capabilities, AI-driven text processing, and **intelligent summarization** through a standardized interface.
 
 ## The Power of txtai: All-in-one Embeddings Database
 
@@ -12,6 +12,7 @@ This project leverages [txtai](https://github.com/neuml/txtai), an all-in-one em
 - **Semantic Search**: Find information based on meaning, not just keywords
 - **Knowledge Graph Integration**: Automatically build and query knowledge graphs from your data
 - **Portable Knowledge Bases**: Save entire knowledge bases as compressed archives (.tar.gz) that can be easily shared and loaded
+- **Native Markdown Support**: Load knowledge bases directly from markdown file directories without requiring tar.gz archives
 - **Extensible Pipeline System**: Process text, documents, audio, images, and video through a unified API
 - **Local-first Architecture**: Run everything locally without sending data to external services
 
@@ -128,6 +129,30 @@ uvx --from kb-mcp-server@0.3.0 kb-search /path/to/knowledge_base "Your search qu
 ### Building a Knowledge Base
 
 You can use the command-line tools installed from PyPI, the Python module directly, or the convenient shell scripts:
+
+#### Building from Markdown Directories (New!)
+
+The server now supports native markdown file directories without requiring tar.gz archives:
+
+```bash
+# Build knowledge base directly from markdown directory
+kb-build build-markdown --markdown-dir /path/to/markdown_docs --config config.yml
+
+# Export to tar.gz for portability (optional)
+kb-build build-markdown --markdown-dir /path/to/markdown_docs --export my_kb.tar.gz
+
+# Update existing knowledge base with new markdown files
+kb-build build-markdown --markdown-dir /path/to/new_docs --update
+
+# Using uvx (no installation required)
+uvx --from kb-mcp-server@0.3.0 kb-build build-markdown --markdown-dir /path/to/markdown_docs
+```
+
+The markdown loader features:
+- Automatically segments documents by headings for optimal chunking
+- Extracts YAML frontmatter as metadata
+- Recursively processes subdirectories
+- Preserves document structure and relationships
 
 #### Using the PyPI Installed Commands
 
@@ -442,6 +467,46 @@ python -m kb_builder build --input /path/to/documents --config src/kb_builder/co
 ```
 
 ## Advanced Features
+
+### Summarization Functions (New!)
+
+The MCP server includes intelligent summarization tools designed to help AI agents manage context size and focus on critical information:
+
+#### Available Summarization Tools
+
+1. **summarize_text**: Condense lengthy text to key points
+   - Focuses on essential information
+   - Configurable summary length
+   - Optional focus areas (e.g., "errors", "warnings")
+   - Prevents context overflow in AI conversations
+
+2. **summarize_file**: Technical analysis of file contents
+   - Detects file types (code, config, markdown, JSON, etc.)
+   - Extracts key metrics (functions, classes, headings, etc.)
+   - Provides structural overview
+   - Includes file metadata
+
+3. **summarize_directory**: Directory structure overview
+   - Visual tree representation
+   - File type statistics
+   - Size analysis and largest files
+   - Configurable depth and filters
+
+4. **summarize_search_results**: Consolidate search findings
+   - Combines multiple search results
+   - Extracts common themes
+   - Creates coherent summaries
+   - Reduces information overload
+
+#### Use Cases
+
+- **Managing Context**: Keep AI conversations within token limits
+- **Code Review**: Quickly understand file purposes and structure
+- **Log Analysis**: Extract critical errors from verbose logs
+- **Documentation**: Generate overviews of large codebases
+- **Research**: Synthesize information from multiple sources
+
+These tools are optimized for various AI providers and automatically adjust output based on content type and complexity.
 
 ### Knowledge Graph Capabilities
 

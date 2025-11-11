@@ -17,6 +17,7 @@ from txtai.pipeline import Extractor
 
 # Import settings
 from .settings import Settings
+from .markdown_loader import load_and_segment_markdown_directory
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -358,6 +359,122 @@ def build_command(args):
         logger.error(f"Error indexing documents: {e}")
         return
 
+def build_from_markdown_command(args):
+    """
+    Handle build-from-markdown command.
+    
+    Args:
+        args: Command-line arguments
+        
+    This command specifically loads markdown files from a directory and builds
+    a knowledge base, providing native markdown support without requiring tar.gz.
+    """
+    if not args.markdown_dir:
+        logger.error("Error: No markdown directory provided.")
+        logger.error("Please provide a markdown directory using --markdown-dir")
+        return
+    
+    markdown_dir = Path(args.markdown_dir)
+    if not markdown_dir.exists():
+        logger.error(f"Markdown directory not found: {markdown_dir}")
+        return
+    
+    if not markdown_dir.is_dir():
+        logger.error(f"Path is not a directory: {markdown_dir}")
+        return
+    
+    logger.info(f"Building knowledge base from markdown directory: {markdown_dir}")
+    
+    # Use config from args or try to find a default config
+    config_path = args.config if hasattr(args, 'config') and args.config else None
+    
+    # If no config provided via args, try to find one
+    if not config_path:
+        config_path = find_config_file()
+    
+    if config_path:
+        # Convert to absolute path if it's a relative path
+        if not os.path.isabs(config_path):
+            config_path = os.path.abspath(config_path)
+            
+        if not os.path.exists(config_path):
+            logger.error(f"Configuration file not found: {config_path}")
+            logger.error("Please provide a valid path to a configuration file")
+            return
+        
+        logger.info(f"Using configuration from {config_path}")
+    else:
+        logger.warning("No configuration file specified, using default settings")
+    
+    # Create application
+    app = create_application(config_path)
+    
+    # Load and segment markdown files
+    try:
+        documents = load_and_segment_markdown_directory(
+            str(markdown_dir),
+            recursive=getattr(args, 'recursive', True),
+            segment_by_headings=getattr(args, 'segment_by_headings', True),
+            min_segment_length=getattr(args, 'min_segment_length', 100)
+        )
+        
+        if not documents:
+            logger.error("No markdown documents found in directory")
+            return
+        
+        logger.info(f"Loaded {len(documents)} markdown document segments")
+        
+        # Index documents
+        if hasattr(args, 'update') and args.update:
+            # Update existing index
+            documents_for_upsert = []
+            for i, doc in enumerate(documents):
+                doc_id = doc.get("id", i)
+                text = doc.get("text", "")
+                metadata = doc.get("metadata")
+                if isinstance(metadata, dict):
+                    metadata = json.dumps(metadata)
+                documents_for_upsert.append((doc_id, text, metadata))
+            
+            if app.config and "path" in app.config:
+                os.makedirs(app.config["path"], exist_ok=True)
+            
+            app.embeddings.upsert(documents_for_upsert)
+            logger.info("Markdown documents added to existing index successfully")
+        else:
+            # Build new index
+            if app.config and "path" in app.config:
+                os.makedirs(app.config["path"], exist_ok=True)
+            
+            app.add(documents)
+            app.index()
+            logger.info("Markdown documents indexed successfully")
+        
+        # Save the index
+        if app.config and "path" in app.config:
+            save_path = app.config["path"]
+            logger.info(f"Saving index to configured path: {save_path}")
+            os.makedirs(save_path, exist_ok=True)
+            app.embeddings.save(save_path)
+            logger.info(f"Index successfully saved to {save_path}")
+        
+        # Export if requested
+        if hasattr(args, 'export') and args.export:
+            export_path = args.export
+            if not export_path.endswith('.tar.gz'):
+                export_path = f"{export_path}.tar.gz"
+            
+            logger.info(f"Exporting index to {export_path}")
+            try:
+                app.embeddings.save(export_path)
+                logger.info(f"Index successfully exported to {export_path}")
+            except Exception as e:
+                logger.error(f"Error exporting index to {export_path}: {e}")
+                
+    except Exception as e:
+        logger.error(f"Error building from markdown directory: {e}")
+        return
+
 def retrieve_command(args):
     """
     Handle retrieve command.
@@ -523,6 +640,17 @@ def main():
     build_parser.add_argument("--export", type=str, help="Export the built index to a compressed tar.gz file")
     build_parser.add_argument("--update", action="store_true", help="Update existing index instead of rebuilding it")
     build_parser.set_defaults(func=build_command)
+    
+    # Build from markdown directory command
+    markdown_parser = subparsers.add_parser("build-markdown", help="Build knowledge base from markdown directory (native markdown support)")
+    markdown_parser.add_argument("--markdown-dir", type=str, required=True, help="Path to directory containing markdown files")
+    markdown_parser.add_argument("--config", type=str, help="Path to configuration file")
+    markdown_parser.add_argument("--export", type=str, help="Export the built index to a compressed tar.gz file")
+    markdown_parser.add_argument("--update", action="store_true", help="Update existing index instead of rebuilding it")
+    markdown_parser.add_argument("--recursive", action="store_true", default=True, help="Recursively search subdirectories (default: True)")
+    markdown_parser.add_argument("--segment-by-headings", action="store_true", default=True, help="Segment documents by headings (default: True)")
+    markdown_parser.add_argument("--min-segment-length", type=int, default=100, help="Minimum segment length in characters (default: 100)")
+    markdown_parser.set_defaults(func=build_from_markdown_command)
     
     # Retrieve command
     retrieve_parser = subparsers.add_parser("retrieve", help="Retrieve information from embeddings database")
