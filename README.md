@@ -508,6 +508,104 @@ The MCP server includes intelligent summarization tools designed to help AI agen
 
 These tools are optimized for various AI providers and automatically adjust output based on content type and complexity.
 
+### Knowledge Base Management & Incremental Learning (New!)
+
+The MCP server now includes advanced tools for **incremental learning** and **evolving knowledge bases**, allowing AI agents to dynamically manage, organize, and refine knowledge over time.
+
+#### Knowledge Management Tools
+
+1. **update_document**: Modify existing documents in the knowledge base
+   - Refine understanding of concepts
+   - Correct errors in existing knowledge
+   - Add new information to existing documents
+   - Support incremental learning
+
+2. **delete_document**: Remove outdated or incorrect information
+   - Clean up the knowledge base
+   - Remove duplicates
+   - Delete deprecated content
+
+3. **save_to_markdown**: Persist knowledge to markdown files
+   - Create new markdown documents
+   - Build git-trackable knowledge base
+   - Enable version control of knowledge
+   - Support human review and editing
+
+4. **update_markdown_file**: Edit existing markdown files
+   - Update documentation directly
+   - Append new sections
+   - Refine existing content
+   - Support both replace and append modes
+
+5. **organize_knowledge**: Semantically categorize documents
+   - Group related documents
+   - Create semantic hierarchies
+   - Improve knowledge navigation
+   - Identify knowledge clusters
+
+6. **consolidate_knowledge**: Merge duplicate/similar documents
+   - Reduce redundancy
+   - Improve knowledge quality
+   - Optimize storage and search
+   - Identify consolidation opportunities
+
+7. **reload_markdown_kb**: Sync knowledge base with disk
+   - Reload after manual edits
+   - Refresh from git pulls
+   - Load newly added files
+   - Synchronize in-memory and file-based knowledge
+
+8. **list_markdown_files**: Explore knowledge base structure
+   - View all markdown files
+   - See file metadata and statistics
+   - Understand knowledge organization
+   - Plan updates and improvements
+
+#### Incremental Learning Workflow
+
+```python
+# Agent learns new information
+await save_to_markdown(
+    filename="python_async.md",
+    content="# Python Async/Await\n\nNew async features...",
+    kb_directory="./docs",
+    metadata={"category": "programming", "language": "python"}
+)
+
+# Agent refines existing knowledge
+await update_document(
+    document_id="python_basics",
+    text="Updated content with Python 3.12 features..."
+)
+
+# Agent organizes related knowledge
+await organize_knowledge(
+    query="python programming",
+    category="python-language",
+    limit=20
+)
+
+# Agent consolidates duplicate information
+await consolidate_knowledge(
+    topic="docker containers",
+    similarity_threshold=0.85
+)
+
+# Reload knowledge base after changes
+await reload_markdown_kb(
+    kb_directory="./docs"
+)
+```
+
+#### Benefits of Incremental Learning
+
+- **Evolving Knowledge**: AI agents can continuously improve their knowledge base
+- **Version Control**: Markdown files can be tracked with git for history and collaboration
+- **Human-AI Collaboration**: Humans can review and edit markdown files, agents can reload
+- **Persistent Memory**: Knowledge persists across sessions in file-based storage
+- **Semantic Organization**: Automatic categorization and consolidation of knowledge
+- **Context Awareness**: Agents understand and manage their own knowledge structure
+
 ### Knowledge Graph Capabilities
 
 The MCP server leverages txtai's built-in graph functionality to provide powerful knowledge graph capabilities:
