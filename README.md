@@ -2,7 +2,7 @@
 
 # Embedding MCP Server
 
-A Model Context Protocol (MCP) server implementation powered by txtai, providing semantic search, knowledge graph capabilities, and AI-driven text processing through a standardized interface.
+A Model Context Protocol (MCP) server implementation powered by txtai, providing semantic search, knowledge graph capabilities, AI-driven text processing, and **intelligent summarization** through a standardized interface.
 
 ## The Power of txtai: All-in-one Embeddings Database
 
@@ -12,6 +12,7 @@ This project leverages [txtai](https://github.com/neuml/txtai), an all-in-one em
 - **Semantic Search**: Find information based on meaning, not just keywords
 - **Knowledge Graph Integration**: Automatically build and query knowledge graphs from your data
 - **Portable Knowledge Bases**: Save entire knowledge bases as compressed archives (.tar.gz) that can be easily shared and loaded
+- **Native Markdown Support**: Load knowledge bases directly from markdown file directories without requiring tar.gz archives
 - **Extensible Pipeline System**: Process text, documents, audio, images, and video through a unified API
 - **Local-first Architecture**: Run everything locally without sending data to external services
 
@@ -128,6 +129,30 @@ uvx --from kb-mcp-server@0.3.0 kb-search /path/to/knowledge_base "Your search qu
 ### Building a Knowledge Base
 
 You can use the command-line tools installed from PyPI, the Python module directly, or the convenient shell scripts:
+
+#### Building from Markdown Directories (New!)
+
+The server now supports native markdown file directories without requiring tar.gz archives:
+
+```bash
+# Build knowledge base directly from markdown directory
+kb-build build-markdown --markdown-dir /path/to/markdown_docs --config config.yml
+
+# Export to tar.gz for portability (optional)
+kb-build build-markdown --markdown-dir /path/to/markdown_docs --export my_kb.tar.gz
+
+# Update existing knowledge base with new markdown files
+kb-build build-markdown --markdown-dir /path/to/new_docs --update
+
+# Using uvx (no installation required)
+uvx --from kb-mcp-server@0.3.0 kb-build build-markdown --markdown-dir /path/to/markdown_docs
+```
+
+The markdown loader features:
+- Automatically segments documents by headings for optimal chunking
+- Extracts YAML frontmatter as metadata
+- Recursively processes subdirectories
+- Preserves document structure and relationships
 
 #### Using the PyPI Installed Commands
 
@@ -442,6 +467,144 @@ python -m kb_builder build --input /path/to/documents --config src/kb_builder/co
 ```
 
 ## Advanced Features
+
+### Summarization Functions (New!)
+
+The MCP server includes intelligent summarization tools designed to help AI agents manage context size and focus on critical information:
+
+#### Available Summarization Tools
+
+1. **summarize_text**: Condense lengthy text to key points
+   - Focuses on essential information
+   - Configurable summary length
+   - Optional focus areas (e.g., "errors", "warnings")
+   - Prevents context overflow in AI conversations
+
+2. **summarize_file**: Technical analysis of file contents
+   - Detects file types (code, config, markdown, JSON, etc.)
+   - Extracts key metrics (functions, classes, headings, etc.)
+   - Provides structural overview
+   - Includes file metadata
+
+3. **summarize_directory**: Directory structure overview
+   - Visual tree representation
+   - File type statistics
+   - Size analysis and largest files
+   - Configurable depth and filters
+
+4. **summarize_search_results**: Consolidate search findings
+   - Combines multiple search results
+   - Extracts common themes
+   - Creates coherent summaries
+   - Reduces information overload
+
+#### Use Cases
+
+- **Managing Context**: Keep AI conversations within token limits
+- **Code Review**: Quickly understand file purposes and structure
+- **Log Analysis**: Extract critical errors from verbose logs
+- **Documentation**: Generate overviews of large codebases
+- **Research**: Synthesize information from multiple sources
+
+These tools are optimized for various AI providers and automatically adjust output based on content type and complexity.
+
+### Knowledge Base Management & Incremental Learning (New!)
+
+The MCP server now includes advanced tools for **incremental learning** and **evolving knowledge bases**, allowing AI agents to dynamically manage, organize, and refine knowledge over time.
+
+#### Knowledge Management Tools
+
+1. **update_document**: Modify existing documents in the knowledge base
+   - Refine understanding of concepts
+   - Correct errors in existing knowledge
+   - Add new information to existing documents
+   - Support incremental learning
+
+2. **delete_document**: Remove outdated or incorrect information
+   - Clean up the knowledge base
+   - Remove duplicates
+   - Delete deprecated content
+
+3. **save_to_markdown**: Persist knowledge to markdown files
+   - Create new markdown documents
+   - Build git-trackable knowledge base
+   - Enable version control of knowledge
+   - Support human review and editing
+
+4. **update_markdown_file**: Edit existing markdown files
+   - Update documentation directly
+   - Append new sections
+   - Refine existing content
+   - Support both replace and append modes
+
+5. **organize_knowledge**: Semantically categorize documents
+   - Group related documents
+   - Create semantic hierarchies
+   - Improve knowledge navigation
+   - Identify knowledge clusters
+
+6. **consolidate_knowledge**: Merge duplicate/similar documents
+   - Reduce redundancy
+   - Improve knowledge quality
+   - Optimize storage and search
+   - Identify consolidation opportunities
+
+7. **reload_markdown_kb**: Sync knowledge base with disk
+   - Reload after manual edits
+   - Refresh from git pulls
+   - Load newly added files
+   - Synchronize in-memory and file-based knowledge
+
+8. **list_markdown_files**: Explore knowledge base structure
+   - View all markdown files
+   - See file metadata and statistics
+   - Understand knowledge organization
+   - Plan updates and improvements
+
+#### Incremental Learning Workflow
+
+```python
+# Agent learns new information
+await save_to_markdown(
+    filename="python_async.md",
+    content="# Python Async/Await\n\nNew async features...",
+    kb_directory="./docs",
+    metadata={"category": "programming", "language": "python"}
+)
+
+# Agent refines existing knowledge
+await update_document(
+    document_id="python_basics",
+    text="Updated content with Python 3.12 features..."
+)
+
+# Agent organizes related knowledge
+await organize_knowledge(
+    query="python programming",
+    category="python-language",
+    limit=20
+)
+
+# Agent consolidates duplicate information
+await consolidate_knowledge(
+    topic="docker containers",
+    similarity_threshold=0.85
+)
+
+# Reload knowledge base after changes
+await reload_markdown_kb(
+    kb_directory="./docs"
+)
+```
+
+#### Benefits of Incremental Learning
+
+- **Evolving Knowledge**: AI agents can continuously improve their knowledge base
+- **Version Control**: Markdown files can be tracked with git for history and collaboration
+- **Human-AI Collaboration**: Humans can review and edit markdown files, agents can reload
+- **Persistent Memory**: Knowledge persists across sessions in file-based storage
+- **Semantic Organization**: Automatic categorization and consolidation of knowledge
+- **Context Awareness**: Agents understand and manage their own knowledge structure
 
 ### Knowledge Graph Capabilities
 
