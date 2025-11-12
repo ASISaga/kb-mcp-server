@@ -615,6 +615,149 @@ The MCP server leverages txtai's built-in graph functionality to provide powerfu
 - **Path Finding**: Discover connections between different pieces of information
 - **Community Detection**: Identify clusters of related information
 
+### Human Memory Features (New!)
+
+The MCP server now includes advanced **human-like memory** capabilities, allowing AI agents to function with temporal awareness, contextual associations, and self-reflection - key aspects of how human memory works.
+
+#### Memory Tools
+
+1. **store_memory**: Store information as rich, contextual memories
+   - Temporal context (when was this learned/experienced?)
+   - Importance/priority scoring (how significant is this?)
+   - Emotional/sentiment context
+   - Associated people, places, topics
+   - Memory source tracking
+   - Related memory linking
+
+2. **recall_by_time**: Time-based memory retrieval
+   - Recall memories from specific time periods ("last week", "yesterday", "last month")
+   - Filter by topics and importance
+   - Temporal pattern analysis
+   - Support for date ranges
+
+3. **find_associations**: Context-based memory discovery
+   - Find memories by people, places, or topics
+   - Sentiment-based filtering
+   - Multi-dimensional association search
+   - Build contextual understanding
+
+4. **reflect_on_memories**: Meta-analysis and insight generation
+   - Identify patterns and themes
+   - Temporal trend analysis
+   - Access frequency patterns
+   - Sentiment distribution
+   - Generate recommendations for knowledge management
+
+5. **update_memory_importance**: Dynamic importance adjustment
+   - Update memory priority based on reflection
+   - Track importance change history
+   - Implement spaced repetition patterns
+   - Adaptive memory management
+
+#### Conversation Memory Tools
+
+1. **store_conversation_turn**: Track conversation history
+   - Store user-assistant exchanges
+   - Session-based grouping
+   - Topic extraction
+   - Sentiment tracking
+   - Importance scoring
+
+2. **recall_conversation_history**: Retrieve past conversations
+   - Session-based recall
+   - Topic filtering
+   - Time-based filtering
+   - Maintain conversational continuity
+
+3. **summarize_conversation_session**: Generate session summaries
+   - Identify main topics
+   - Extract key decisions
+   - Sentiment analysis
+   - High-importance highlights
+   - Auto-save summaries
+
+4. **search_conversations**: Semantic conversation search
+   - Find relevant past discussions
+   - Context-aware search
+   - Build on previous conversations
+   - Cross-session discovery
+
+#### Memory-as-Human-Memory Design Principles
+
+The memory system is designed to mirror human cognitive processes:
+
+1. **Temporal Awareness**: Memories have timestamps and can be recalled by time period
+2. **Importance Weighting**: Not all memories are equal - importance scores help prioritize
+3. **Contextual Associations**: Memories are linked through people, places, topics, and emotions
+4. **Reflection Capability**: The system can analyze its own memory patterns and generate insights
+5. **Conversational Continuity**: Track and recall conversation history across sessions
+6. **Dynamic Adaptation**: Memory importance can be updated based on usage and reflection
+
+#### Example Memory Workflow
+
+```python
+# Store a memory with rich context
+await store_memory(
+    content="Learned about Python async/await patterns for concurrent programming",
+    importance=8,
+    topics=["python", "concurrency", "async"],
+    source="reading",
+    sentiment="positive"
+)
+
+# Recall recent memories about Python
+recent_python = await recall_by_time(
+    period="last_week",
+    topics=["python"],
+    min_importance=7
+)
+
+# Find all memories associated with a project
+project_memories = await find_associations(
+    topics=["project_alpha"],
+    people=["Alice", "Bob"],
+    min_importance=6
+)
+
+# Reflect on learning patterns
+insights = await reflect_on_memories(
+    aspect="all",
+    time_period="last_month"
+)
+
+# Store conversation for continuity
+await store_conversation_turn(
+    user_message="How do I implement async patterns in Python?",
+    assistant_response="To implement async patterns in Python...",
+    session_id="learning_session_1",
+    topics=["python", "async"],
+    importance=7
+)
+
+# Recall conversation history
+history = await recall_conversation_history(
+    session_id="learning_session_1",
+    limit=10
+)
+
+# Generate session summary
+summary = await summarize_conversation_session(
+    session_id="learning_session_1",
+    save_summary=True
+)
+```
+
+#### Benefits of Human-like Memory
+
+- **Temporal Awareness**: Know when information was learned or discussed
+- **Priority Management**: Focus on important memories while retaining others
+- **Contextual Recall**: Find information through multiple association paths
+- **Self-Reflection**: Understand patterns in learning and interaction
+- **Conversational Continuity**: Maintain context across sessions and conversations
+- **Adaptive Learning**: Memory importance evolves based on usage and reflection
+- **Emotional Context**: Track sentiment and emotional associations
+- **Relationship Tracking**: Associate memories with people, places, and events
+
 ### Causal Boosting Mechanism
 
 The MCP server includes a sophisticated causal boosting mechanism that enhances search relevance by identifying and prioritizing causal relationships:
