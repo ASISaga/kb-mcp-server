@@ -615,6 +615,242 @@ The MCP server leverages txtai's built-in graph functionality to provide powerfu
 - **Path Finding**: Discover connections between different pieces of information
 - **Community Detection**: Identify clusters of related information
 
+### Human Memory Features (New!)
+
+The MCP server now includes advanced **human-like memory** capabilities, allowing AI agents to function with temporal awareness, contextual associations, and self-reflection - key aspects of how human memory works.
+
+#### Memory Tools
+
+1. **store_memory**: Store information as rich, contextual memories
+   - Temporal context (when was this learned/experienced?)
+   - Importance/priority scoring (how significant is this?)
+   - Emotional/sentiment context
+   - Associated people, places, topics
+   - Memory source tracking
+   - Related memory linking
+
+2. **recall_by_time**: Time-based memory retrieval
+   - Recall memories from specific time periods ("last week", "yesterday", "last month")
+   - Filter by topics and importance
+   - Temporal pattern analysis
+   - Support for date ranges
+
+3. **find_associations**: Context-based memory discovery
+   - Find memories by people, places, or topics
+   - Sentiment-based filtering
+   - Multi-dimensional association search
+   - Build contextual understanding
+
+4. **reflect_on_memories**: Meta-analysis and insight generation
+   - Identify patterns and themes
+   - Temporal trend analysis
+   - Access frequency patterns
+   - Sentiment distribution
+   - Generate recommendations for knowledge management
+
+5. **update_memory_importance**: Dynamic importance adjustment
+   - Update memory priority based on reflection
+   - Track importance change history
+   - Implement spaced repetition patterns
+   - Adaptive memory management
+
+#### Conversation Memory Tools
+
+1. **store_conversation_turn**: Track conversation history
+   - Store user-assistant exchanges
+   - Session-based grouping
+   - Topic extraction
+   - Sentiment tracking
+   - Importance scoring
+
+2. **recall_conversation_history**: Retrieve past conversations
+   - Session-based recall
+   - Topic filtering
+   - Time-based filtering
+   - Maintain conversational continuity
+
+3. **summarize_conversation_session**: Generate session summaries
+   - Identify main topics
+   - Extract key decisions
+   - Sentiment analysis
+   - High-importance highlights
+   - Auto-save summaries
+
+4. **search_conversations**: Semantic conversation search
+   - Find relevant past discussions
+   - Context-aware search
+   - Build on previous conversations
+   - Cross-session discovery
+
+#### Memory-as-Human-Memory Design Principles
+
+The memory system is designed to mirror human cognitive processes:
+
+1. **Temporal Awareness**: Memories have timestamps and can be recalled by time period
+2. **Importance Weighting**: Not all memories are equal - importance scores help prioritize
+3. **Contextual Associations**: Memories are linked through people, places, topics, and emotions
+4. **Reflection Capability**: The system can analyze its own memory patterns and generate insights
+5. **Conversational Continuity**: Track and recall conversation history across sessions
+6. **Dynamic Adaptation**: Memory importance can be updated based on usage and reflection
+
+#### Example Memory Workflow
+
+```python
+# Store a memory with rich context
+await store_memory(
+    content="Learned about Python async/await patterns for concurrent programming",
+    importance=8,
+    topics=["python", "concurrency", "async"],
+    source="reading",
+    sentiment="positive"
+)
+
+# Recall recent memories about Python
+recent_python = await recall_by_time(
+    period="last_week",
+    topics=["python"],
+    min_importance=7
+)
+
+# Find all memories associated with a project
+project_memories = await find_associations(
+    topics=["project_alpha"],
+    people=["Alice", "Bob"],
+    min_importance=6
+)
+
+# Reflect on learning patterns
+insights = await reflect_on_memories(
+    aspect="all",
+    time_period="last_month"
+)
+
+# Store conversation for continuity
+await store_conversation_turn(
+    user_message="How do I implement async patterns in Python?",
+    assistant_response="To implement async patterns in Python...",
+    session_id="learning_session_1",
+    topics=["python", "async"],
+    importance=7
+)
+
+# Recall conversation history
+history = await recall_conversation_history(
+    session_id="learning_session_1",
+    limit=10
+)
+
+# Generate session summary
+summary = await summarize_conversation_session(
+    session_id="learning_session_1",
+    save_summary=True
+)
+```
+
+### Incremental Learning Tools ("On the Go" Learning) (New!)
+
+The MCP server now includes powerful **incremental learning** capabilities that enable continuous knowledge acquisition and progressive refinement - essential for on-the-go learning.
+
+#### Incremental Learning Tools
+
+1. **quick_capture**: Rapidly capture learning moments without interruption
+   - Capture fleeting thoughts during active learning
+   - Record "aha moments" on the fly
+   - Note questions that arise during study
+   - Mark items for later expansion
+   - Build knowledge incrementally
+
+2. **expand_learning**: Transform quick captures into full memories
+   - Add depth and context to captured ideas
+   - Connect to related knowledge
+   - Assign importance and categorization
+   - Extract key insights
+   - Progressive knowledge building
+
+3. **reinforce_learning**: Strengthen knowledge through repetition
+   - Track usage and application of knowledge
+   - Implement spaced repetition principles
+   - Boost importance based on reinforcement
+   - Measure mastery progression
+   - Build long-term retention
+
+4. **track_learning_progress**: Monitor and analyze learning journey
+   - Identify quick captures needing expansion
+   - Track learnings requiring reinforcement
+   - Measure learning streaks and momentum
+   - Discover active focus areas
+   - Get personalized recommendations
+
+5. **create_learning_path**: Build adaptive learning roadmaps
+   - Define learning goals and milestones
+   - Identify knowledge gaps
+   - Suggest prerequisite topics
+   - Create structured learning phases
+   - Adapt to current knowledge level
+
+#### Incremental Learning Workflow
+
+```python
+# On the go: Quick capture during active learning
+capture = await quick_capture(
+    content="Event loop processes async tasks in Python - need to understand how",
+    context="reading async documentation",
+    tags=["python", "async", "todo"],
+    expand_later=True
+)
+
+# Later: Expand with full understanding
+expanded = await expand_learning(
+    capture_id=capture["capture_id"],
+    expanded_content="Python's event loop is the core of async programming. It manages and executes async tasks, handling I/O operations without blocking...",
+    importance=8,
+    topics=["python", "async", "event-loop"],
+    key_insight="Event loop enables concurrent I/O without threads"
+)
+
+# Apply knowledge in practice
+reinforced = await reinforce_learning(
+    learning_id=expanded["expanded_id"],
+    usage_context="Built async web scraper using asyncio",
+    mastery_level=7
+)
+
+# Track progress
+progress = await track_learning_progress(
+    time_period="last_week"
+)
+# Returns: pending captures, reinforcement needs, learning streak, recommendations
+
+# Plan next steps
+learning_path = await create_learning_path(
+    goal="master async programming in Python",
+    current_level="intermediate",
+    related_topics=["event-loop", "coroutines"]
+)
+```
+
+#### Benefits of Incremental Learning
+
+- **Capture Without Interruption**: Quickly save insights while staying focused
+- **Progressive Refinement**: Build knowledge incrementally over time
+- **Spaced Repetition**: Strengthen retention through tracked reinforcement
+- **Learning Momentum**: Track streaks and maintain motivation
+- **Adaptive Paths**: Personalized learning based on your current knowledge
+- **Knowledge Gaps**: Identify what needs more attention
+- **Mastery Tracking**: Measure progression from beginner to expert
+- **On-the-Go Learning**: Perfect for continuous, real-world learning
+
+#### Benefits of Human-like Memory
+
+- **Temporal Awareness**: Know when information was learned or discussed
+- **Priority Management**: Focus on important memories while retaining others
+- **Contextual Recall**: Find information through multiple association paths
+- **Self-Reflection**: Understand patterns in learning and interaction
+- **Conversational Continuity**: Maintain context across sessions and conversations
+- **Adaptive Learning**: Memory importance evolves based on usage and reflection
+- **Emotional Context**: Track sentiment and emotional associations
+- **Relationship Tracking**: Associate memories with people, places, and events
+
 ### Causal Boosting Mechanism
 
 The MCP server includes a sophisticated causal boosting mechanism that enhances search relevance by identifying and prioritizing causal relationships:
