@@ -747,6 +747,99 @@ summary = await summarize_conversation_session(
 )
 ```
 
+### Incremental Learning Tools ("On the Go" Learning) (New!)
+
+The MCP server now includes powerful **incremental learning** capabilities that enable continuous knowledge acquisition and progressive refinement - essential for on-the-go learning.
+
+#### Incremental Learning Tools
+
+1. **quick_capture**: Rapidly capture learning moments without interruption
+   - Capture fleeting thoughts during active learning
+   - Record "aha moments" on the fly
+   - Note questions that arise during study
+   - Mark items for later expansion
+   - Build knowledge incrementally
+
+2. **expand_learning**: Transform quick captures into full memories
+   - Add depth and context to captured ideas
+   - Connect to related knowledge
+   - Assign importance and categorization
+   - Extract key insights
+   - Progressive knowledge building
+
+3. **reinforce_learning**: Strengthen knowledge through repetition
+   - Track usage and application of knowledge
+   - Implement spaced repetition principles
+   - Boost importance based on reinforcement
+   - Measure mastery progression
+   - Build long-term retention
+
+4. **track_learning_progress**: Monitor and analyze learning journey
+   - Identify quick captures needing expansion
+   - Track learnings requiring reinforcement
+   - Measure learning streaks and momentum
+   - Discover active focus areas
+   - Get personalized recommendations
+
+5. **create_learning_path**: Build adaptive learning roadmaps
+   - Define learning goals and milestones
+   - Identify knowledge gaps
+   - Suggest prerequisite topics
+   - Create structured learning phases
+   - Adapt to current knowledge level
+
+#### Incremental Learning Workflow
+
+```python
+# On the go: Quick capture during active learning
+capture = await quick_capture(
+    content="Event loop processes async tasks in Python - need to understand how",
+    context="reading async documentation",
+    tags=["python", "async", "todo"],
+    expand_later=True
+)
+
+# Later: Expand with full understanding
+expanded = await expand_learning(
+    capture_id=capture["capture_id"],
+    expanded_content="Python's event loop is the core of async programming. It manages and executes async tasks, handling I/O operations without blocking...",
+    importance=8,
+    topics=["python", "async", "event-loop"],
+    key_insight="Event loop enables concurrent I/O without threads"
+)
+
+# Apply knowledge in practice
+reinforced = await reinforce_learning(
+    learning_id=expanded["expanded_id"],
+    usage_context="Built async web scraper using asyncio",
+    mastery_level=7
+)
+
+# Track progress
+progress = await track_learning_progress(
+    time_period="last_week"
+)
+# Returns: pending captures, reinforcement needs, learning streak, recommendations
+
+# Plan next steps
+learning_path = await create_learning_path(
+    goal="master async programming in Python",
+    current_level="intermediate",
+    related_topics=["event-loop", "coroutines"]
+)
+```
+
+#### Benefits of Incremental Learning
+
+- **Capture Without Interruption**: Quickly save insights while staying focused
+- **Progressive Refinement**: Build knowledge incrementally over time
+- **Spaced Repetition**: Strengthen retention through tracked reinforcement
+- **Learning Momentum**: Track streaks and maintain motivation
+- **Adaptive Paths**: Personalized learning based on your current knowledge
+- **Knowledge Gaps**: Identify what needs more attention
+- **Mastery Tracking**: Measure progression from beginner to expert
+- **On-the-Go Learning**: Perfect for continuous, real-world learning
+
 #### Benefits of Human-like Memory
 
 - **Temporal Awareness**: Know when information was learned or discussed
